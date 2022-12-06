@@ -128,7 +128,7 @@ const refreshUserToken = async (
             const token = jwt.sign(
                 { user_id: decoded.user_id, email: decoded.email },
                 process.env.JWT_SECRET,
-                { expiresIn: '1h' }
+                { expiresIn: '2m' }
             );
 
             return res.status(200).json({ token });
@@ -141,4 +141,19 @@ const refreshUserToken = async (
 };
 
 
-export { registerUser, loginUser, refreshUserToken };
+const UserLogout = async (
+    req: Request,
+    res: Response
+): Promise<e.Response<any, Record<string, any>>> => {
+    try {
+        const { refresh } = req.body;
+        refreshTokens = refreshTokens.filter((token) => refresh !== token); // This will remove the token from the array of refresh tokens using the filter method 
+
+        return res.status(200).send("User logged out successful");
+    } catch (error) {
+        throw error;
+    }
+};
+
+
+export { registerUser, loginUser, refreshUserToken, UserLogout };

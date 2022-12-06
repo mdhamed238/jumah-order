@@ -105,3 +105,14 @@ Response
 {
     "refresh":"refresh_token"
 }
+```
+
+---
+
+
+##### User logout 
+> POST http://localhost:4545/api/v1/users/logout
+```json
+{
+    "refresh":"refresh_token"
+}
