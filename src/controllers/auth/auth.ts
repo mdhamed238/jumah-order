@@ -11,7 +11,7 @@ let refreshTokens: string[] = [];
 
 const registerUser = async (req: Request, res: Response): Promise<void> => {
     try {
-        const body = req.body as Pick<IUser, 'name' | 'email' | 'password'>;
+        const body = req.body as Pick<IUser, 'name' | 'email' | 'password' | 'skills' | 'profile'>;
 
         if (!(body.name && body.email && body.password)) {
             res.status(400).json({ message: 'All fields are required' });
@@ -46,6 +46,8 @@ const registerUser = async (req: Request, res: Response): Promise<void> => {
             name: body.name,
             email: body.email,
             password: hashedPassword,
+            skills: body.skills,
+            profile: body.profile,
         });
 
         const newUser: IUser = await user.save();

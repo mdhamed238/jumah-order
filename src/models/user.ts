@@ -19,6 +19,29 @@ const userSchema: Schema = new Schema(
         resetPasswordExpire: {
             type: String,
         },
+        skills: {
+            type: [String],
+            enum: ["software development", "web development", "mobile development", "design", "management", "other"],
+            required: false,
+        },
+        profile: {
+            firstName: { type: String, required: false },
+            lastName: { type: String, required: false },
+            avatar: { type: String, required: false },
+            bio: { type: String, required: false },
+            phone: { type: String, required: false },
+            gender: { type: String, required: false },
+            address: {
+                street: { type: String, required: false },
+                city: { type: String, required: false },
+                state: { type: String, required: false },
+                country: { type: String, required: false },
+                zip: { type: String, required: false },
+                location: { type: String, required: false },
+            },
+            active: { type: Boolean, required: false, default: true },
+
+        },
     },
     {
         timestamps: true,

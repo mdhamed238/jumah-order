@@ -81,9 +81,27 @@ Response
 > POST http://localhost:4545/api/v1/users/register
 ```json
 {
-    "name": "hp updated",
-    "email": "ab@c.com",
-    "password": "admin1234"
+    "email":"test2@yopmail.com",
+    "password":"admin1234",
+    "name":"dr simple",
+    "skills":["management", "design"],
+    "profile":{
+        "firstName":"jude",
+        "lastName":"Okoye",
+        "avatar":"this.com",
+        "bio":"a thunder",
+        "phone":"+2348168623014",
+        "gender":"female",
+        "address":{
+            "street":"aranse",
+            "city":"sagamu",
+            "state":"ogun",
+            "country":"Nigeria",
+            "zip":"23401",
+            "location":"lulabby"
+        }
+    }
+
 }
 ```
 

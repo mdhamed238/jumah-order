@@ -40,8 +40,6 @@ app.use((req, res, next) => {
 
 
 
-
-
 // Listen for requests on port 4545
 app.listen(port, () => {
     console.log(`Server started on port ${port}`);
