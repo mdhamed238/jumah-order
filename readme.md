@@ -116,3 +116,27 @@ Response
 {
     "refresh":"refresh_token"
 }
+
+```
+---
+
+##### Forgot password
+> POST  http://localhost:7878/api/v1/users/forgot-password
+```
+{
+    "email":"your email goes here"
+}
+```
+
+
+##### Reset Password
+> POST  http://localhost:7878/api/v1/users/reset-password/:resetToken
+
+Pass in the token gotten from the email into the params e.g
+ http://localhost:3000/passwordreset/<mark>1999a3d7e8fa0a81962e99215258107a0abd34e8</mark>
+
+```json
+{
+    "password":"mimiyomi"
+}
+```

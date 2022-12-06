@@ -45,7 +45,6 @@ const addProduct = async (req: Request, res: Response): Promise<void> => {
         }
 
 
-
         const product: IProduct = new Product({
             name: body.name,
             price: body.price,

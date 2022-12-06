@@ -20,8 +20,6 @@ app.use(cors());
 app.use(express.json());
 
 
-
-
 // Home page
 app.get('/', (req, res) => {
     res.send('Hello World!');
@@ -31,6 +29,17 @@ app.get('/', (req, res) => {
 app.use('/api/v1/products', productRouter);
 app.use('/api/v1/users', userRouter);
     
+
+
+// Handle 404 errors
+app.use((req, res, next) => {
+    const error = new Error('Not found');
+    res.status(404);
+    next(error);
+});
+
+
+
 
 
 // Listen for requests on port 4545
