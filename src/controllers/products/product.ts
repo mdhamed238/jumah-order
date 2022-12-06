@@ -9,6 +9,7 @@ import { IProduct } from "../../types/product";
 
 const getAllProducts = async (req: Request, res: Response): Promise<void> => {  // <--- Notice the return type of Promise<void> which means that this function will return a promise that will resolve to void (nothing)
     try {
+
         const products: IProduct[] = await Product.find().populate("user_id"); // <--- populate is a mongoose method that allows you to populate a field with the data from another collection
         res.status(200).json({ products });
     } catch (error) {
@@ -35,6 +36,15 @@ const addProduct = async (req: Request, res: Response): Promise<void> => {
         const user_id = user._id;
 
         const body = req.body as Pick<IProduct, "name" | "price" | "description" | "category">;  // <--- Pick is a generic type that allows you to select which properties you want to use from the IProduct interface
+
+
+        // validate input
+        if (!body.name || !body.price || !body.description || !body.category) {
+            res.status(400).json({ message: "Missing required fields" });
+            return;
+        }
+
+
 
         const product: IProduct = new Product({
             name: body.name,
