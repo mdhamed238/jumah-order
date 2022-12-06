@@ -84,7 +84,7 @@ const loginUser = async (req: Request, res: Response): Promise<void> => {
             const token = jwt.sign(
                 { user_id: user._id, email: user.email },
                 process.env.JWT_SECRET,
-                { expiresIn: '5m' }
+                { expiresIn: '1m' }
             );
 
             const refreshToken = jwt.sign(
@@ -93,6 +93,7 @@ const loginUser = async (req: Request, res: Response): Promise<void> => {
             );
 
             refreshTokens.push(refreshToken);
+            console.log(refreshTokens)
 
             res.status(200).json({ token, refreshToken });
             return;
@@ -113,9 +114,10 @@ const refreshUserToken = async (
     try {
         const { refresh } = req.body;
         if (!refresh) {
-            return res.status(400).send("Refresh token not provided.");
+            return res.status(400).send("Refresh token not provided. Please enter one");
         }
 
+        console.log(refreshTokens)
         if (!refreshTokens.includes(refresh)) {
             return res.status(403).send("Refresh Invalid. Please login.");
         }

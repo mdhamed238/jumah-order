@@ -103,5 +103,5 @@ Response
 > POST http://localhost:4545/api/v1/users/refresh
 ```json
 {
-    "refresh":"access_token"
+    "refresh":"refresh_token"
 }
