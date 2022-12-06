@@ -9,7 +9,7 @@ import { IProduct } from "../../types/product";
 
 const getAllProducts = async (req: Request, res: Response): Promise<void> => {  // <--- Notice the return type of Promise<void> which means that this function will return a promise that will resolve to void (nothing)
     try {
-        const products: IProduct[] = await Product.find();  // IpProduct[] is an array of IProduct objects
+        const products: IProduct[] = await Product.find().populate("user_id"); // <--- populate is a mongoose method that allows you to populate a field with the data from another collection
         res.status(200).json({ products });
     } catch (error) {
         throw error;
@@ -25,7 +25,7 @@ const addProduct = async (req: Request, res: Response): Promise<void> => {
         // decode the token and get the user id
         const decoded = jwt.verify(req.headers.authorization?.split(" ")[1], process.env.JWT_SECRET);
 
-        console.log(decoded);
+        console.log({ "decoded ============================": decoded });
 
         const user = await User.findOne({ _id: decoded.user_id });
         if (!user) {
@@ -33,8 +33,6 @@ const addProduct = async (req: Request, res: Response): Promise<void> => {
             return;
         }
         const user_id = user._id;
-
-
 
         const body = req.body as Pick<IProduct, "name" | "price" | "description" | "category">;  // <--- Pick is a generic type that allows you to select which properties you want to use from the IProduct interface
 
