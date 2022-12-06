@@ -1,7 +1,11 @@
 import { Response, Request } from "express";
 import { Product } from "../../models/product";
+import User from "../../models/user";
+const jwt = require("jsonwebtoken");
 
 import { IProduct } from "../../types/product";
+
+
 
 const getAllProducts = async (req: Request, res: Response): Promise<void> => {  // <--- Notice the return type of Promise<void> which means that this function will return a promise that will resolve to void (nothing)
     try {
@@ -14,7 +18,24 @@ const getAllProducts = async (req: Request, res: Response): Promise<void> => {  
 
 
 const addProduct = async (req: Request, res: Response): Promise<void> => {
+
+
     try {
+
+        // decode the token and get the user id
+        const decoded = jwt.verify(req.headers.authorization?.split(" ")[1], process.env.JWT_SECRET);
+
+        console.log(decoded);
+
+        const user = await User.findOne({ _id: decoded.user_id });
+        if (!user) {
+            res.status(400).json({ message: "User not found" });
+            return;
+        }
+        const user_id = user._id;
+
+
+
         const body = req.body as Pick<IProduct, "name" | "price" | "description" | "category">;  // <--- Pick is a generic type that allows you to select which properties you want to use from the IProduct interface
 
         const product: IProduct = new Product({
@@ -22,6 +43,7 @@ const addProduct = async (req: Request, res: Response): Promise<void> => {
             price: body.price,
             description: body.description,
             category: body.category,
+            user_id,
         });
 
         const newProduct: IProduct = await product.save();

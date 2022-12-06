@@ -1,5 +1,5 @@
 import { IProduct } from "../types/product";
-import { model, Schema } from "mongoose";
+import mongoose, { model, Schema } from "mongoose";
 
 const productSchema:Schema = new Schema({
     name: {
@@ -17,6 +17,10 @@ const productSchema:Schema = new Schema({
     category: {
         type: String,
         required: true,
+    },
+    user_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
     },
 }, {
     timestamps: true,
