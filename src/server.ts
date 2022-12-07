@@ -4,6 +4,7 @@ import cors from 'cors';
 import { connectDatabase } from './database/database';
 import productRouter from './routes/product';
 import userRouter from './routes/user';
+import logger from './log/logger';
 
 dotenv.config();
 
@@ -42,6 +43,7 @@ app.use((req, res, next) => {
 
 // Listen for requests on port 4545
 app.listen(port, () => {
-    console.log(`Server started on port ${port}`);
+    logger.info
+        (`Server started on port ${port}`);
 });
 
