@@ -11,7 +11,8 @@ const getAllProducts = async (req: Request, res: Response): Promise<void> => {  
     try {
 
         const products: IProduct[] = await Product.find().populate("user_id"); // <--- populate is a mongoose method that allows you to populate a field with the data from another collection
-        res.status(200).json({ products });
+        res.status(200).json({ products }); 
+        return;
     } catch (error) {
         throw error;
     }
@@ -118,7 +119,26 @@ const getSingleProduct = async (req: Request, res: Response, next: NextFunction)
     }
 };
 
+// get all products aggregated by category
+const getProductsByCategory = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+        const products: IProduct[] = await Product.aggregate([
+            {
+                $group: {
+                    _id: "$category",
+                    products: { $push: "$$ROOT" },
+                },
+            },
+        ]);
 
-export { getAllProducts, addProduct, updateProduct, deleteProduct, getSingleProduct };
+        res.status(200).json({ products });
+    } catch (error) {
+        next(error);
+    }
+};
+
+
+
+export { getAllProducts, addProduct, updateProduct, deleteProduct, getSingleProduct, getProductsByCategory };
 
 

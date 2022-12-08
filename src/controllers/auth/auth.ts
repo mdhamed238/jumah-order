@@ -74,7 +74,7 @@ const registerUser = async (req: Request, res: Response, next: NextFunction): Pr
             html: `<p>Welcome to the app, ${newUser.name}. Let me know how you get along with the app.</p>`
         }
 
-        await sendEmail(options);
+        // await sendEmail(options);
 
 
 
@@ -113,7 +113,7 @@ const loginUser = async (req: Request, res: Response, next: NextFunction): Promi
             refreshTokens.push(refreshToken);
             console.log(refreshTokens)
 
-            res.status(200).json({ token, refreshToken });
+            res.status(202).json({ token, refreshToken });
             return;
         } else {
             res.status(400).json({ message: 'Invalid credentials' });

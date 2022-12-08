@@ -5,4 +5,3 @@ module.exports = {
   setupFilesAfterEnv: ["<rootDir>/src/setupFilesAfterEnv.ts"],
   modulePathIgnorePatterns: ["<rootDir>/dist/"],
 };
-

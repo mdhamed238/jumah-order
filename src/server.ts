@@ -13,8 +13,6 @@ dotenv.config();
 
 const app = express();
 
-const port = process.env.PORT || 4545;
-
 
 // connect to database
 connectDatabase();
@@ -28,7 +26,7 @@ app.use(express.json());
 
 // Home page
 app.get('/', (req, res) => {
-    res.send('Hello World!');
+    res.status(200).json({ message: 'Hello World!' });
 });
 
 // Mount routers
@@ -43,9 +41,5 @@ app.use(notFound);
 // Handle errors
 app.use(errorHandler);
 
-// Listen for requests on port 4545
-app.listen(port, () => {
-    logger.info
-        (`Server started on port ${port}`);
-});
 
+export default app;
