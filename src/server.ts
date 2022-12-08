@@ -5,6 +5,9 @@ import { connectDatabase } from './database/database';
 import productRouter from './routes/product';
 import userRouter from './routes/user';
 import logger from './log/logger';
+import helmet from 'helmet';
+import compression from 'compression';
+import { errorHandler, notFound } from './errors/errors-handler';
 
 dotenv.config();
 
@@ -18,6 +21,8 @@ connectDatabase();
 
 // Middleware
 app.use(cors());
+app.use(helmet());
+app.use(compression());
 app.use(express.json());
 
 
@@ -33,13 +38,10 @@ app.use('/api/v1/users', userRouter);
 
 
 // Handle 404 errors
-app.use((req, res, next) => {
-    const error = new Error('Not found');
-    res.status(404);
-    next(error);
-});
+app.use(notFound);
 
-
+// Handle errors
+app.use(errorHandler);
 
 // Listen for requests on port 4545
 app.listen(port, () => {

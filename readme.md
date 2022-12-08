@@ -2,6 +2,11 @@
 > tsc --init
 
 
+#### Jest config
+> yarn global add jest
+> yarn add --dev ts-jest
+
+
 ---
 
 #### Add products

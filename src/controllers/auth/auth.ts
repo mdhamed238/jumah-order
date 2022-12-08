@@ -1,4 +1,4 @@
-import e, { Response, Request } from 'express';
+import e, { Response, Request, NextFunction } from 'express';
 import crypto from "crypto";
 import { IUser } from '../../types/user';
 import User from '../../models/user';
@@ -9,7 +9,7 @@ const jwt = require('jsonwebtoken');
 
 let refreshTokens: string[] = [];
 
-const registerUser = async (req: Request, res: Response): Promise<void> => {
+const registerUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const body = req.body as Pick<IUser, 'name' | 'email' | 'password' | 'skills' | 'profile'>;
 
@@ -81,11 +81,11 @@ const registerUser = async (req: Request, res: Response): Promise<void> => {
         res.status(201).json({ token, refreshToken });
     
     } catch (error) {
-        throw error;
+        next(error);
     }
 };
 
-const loginUser = async (req: Request, res: Response): Promise<void> => {
+const loginUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const body = req.body as Pick<IUser, 'email' | 'password'>;
 
@@ -120,14 +120,14 @@ const loginUser = async (req: Request, res: Response): Promise<void> => {
             return;
         }
     } catch (error) {
-        throw error;
+        next(error);
     }
 };
 
 
 const refreshUserToken = async (
     req: Request,
-    res: Response
+    res: Response, next: NextFunction
 ): Promise<e.Response<any, Record<string, any>>> => {
     try {
         const { refresh } = req.body;
@@ -161,7 +161,7 @@ const refreshUserToken = async (
 
 const UserLogout = async (
     req: Request,
-    res: Response
+    res: Response, next: NextFunction
 ): Promise<e.Response<any, Record<string, any>>> => {
     try {
         const { refresh } = req.body;
@@ -176,15 +176,16 @@ const UserLogout = async (
 
 const forgotPassword = async (
     req: Request,
-    res: Response
-): Promise<e.Response<any, Record<string, any>>> => {
+    res: Response, next: NextFunction
+): Promise<void> => {
     try {
         const { email } = req.body;
 
         const user: IUser | null = await User.findOne({ email });
 
         if (!user) {
-            return res.status(400).send("User does not exist");
+            res.status(400).send("User does not exist");
+            return;
         }
 
         const resetToken = user.getResetPasswordToken();
@@ -203,20 +204,20 @@ const forgotPassword = async (
 
         await sendEmail(options);
 
-        return res.status(200).json({
+        res.status(200).json({
             status: "success",
             message: "Password reset sent successfully"
         })
 
-    } catch (error: any) {
-        return res.status(500).json({ message: error.message })
+    } catch (error) {
+        next(error);
     }
 }
 
 
 const resetPassword = async (
     req: Request,
-    res: Response
+    res: Response, next: NextFunction
 ): Promise<void> => {
     const { password } = req.body;
 
@@ -254,7 +255,7 @@ const resetPassword = async (
 
 
     } catch (error) {
-
+        next(error);
     }
 }
 

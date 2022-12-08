@@ -1,4 +1,4 @@
-import { Response, Request } from "express";
+import { Response, Request, NextFunction } from "express";
 import { Product } from "../../models/product";
 import User from "../../models/user";
 const jwt = require("jsonwebtoken");
@@ -18,7 +18,7 @@ const getAllProducts = async (req: Request, res: Response): Promise<void> => {  
 };
 
 
-const addProduct = async (req: Request, res: Response): Promise<void> => {
+const addProduct = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 
 
     try {
@@ -60,11 +60,11 @@ const addProduct = async (req: Request, res: Response): Promise<void> => {
             .status(201)
             .json({ message: "Product added", product: newProduct, products: allProducts });
     } catch (error) {
-        throw error;
+        next(error);
     }
 };
 
-const updateProduct = async (req: Request, res: Response): Promise<void> => {
+const updateProduct = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const {
             params: { id },
@@ -81,11 +81,11 @@ const updateProduct = async (req: Request, res: Response): Promise<void> => {
             products: allProducts,
         });
     } catch (error) {
-        throw error;
+        next(error);
     }
 };
 
-const deleteProduct = async (req: Request, res: Response): Promise<void> => {
+const deleteProduct = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const deletedProduct: IProduct | null = await Product.findByIdAndRemove(
             req.params.id
@@ -97,11 +97,11 @@ const deleteProduct = async (req: Request, res: Response): Promise<void> => {
             products: allProducts,
         });
     } catch (error) {
-        throw error;
+        next(error);
     }
 };
 
-const getSingleProduct = async (req: Request, res: Response): Promise<void> => {
+const getSingleProduct = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const { params: { id } } = req;
         const product: IProduct | null = await Product.findById({ _id: id });
@@ -114,7 +114,7 @@ const getSingleProduct = async (req: Request, res: Response): Promise<void> => {
 
         res.status(product ? 200 : 404).json({ product });
     } catch (error) {
-        throw error;
+        next(error);
     }
 };
 
