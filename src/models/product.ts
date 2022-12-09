@@ -18,6 +18,10 @@ const productSchema:Schema = new Schema({
         type: String,
         required: true,
     },
+    images: {
+        type: [String],
+    },
+
     user_id: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",

@@ -28,7 +28,6 @@ const authenticate = async (req: Request, res: Response, next: NextFunction) => 
 
 
         const user: IUser | null = await User.findOne({ _id: decoded.user_id });
-        console.log(user);
     
         if (!user) {
         throw new Error();

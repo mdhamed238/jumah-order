@@ -4,6 +4,7 @@ import User from "../../models/user";
 const jwt = require("jsonwebtoken");
 
 import { IProduct } from "../../types/product";
+import { cloudinary } from "../../utils/image-upload";
 
 
 
@@ -37,30 +38,46 @@ const addProduct = async (req: Request, res: Response, next: NextFunction): Prom
         const user_id = user._id;
 
         const body = req.body as Pick<IProduct, "name" | "price" | "description" | "category">;  // <--- Pick is a generic type that allows you to select which properties you want to use from the IProduct interface
+        const images = req.files as Express.Multer.File[]; // <--- req.files is an array of Express.Multer.File objects
+
+        // upload images to cloudinary
+        const imagesUrls = await Promise.all(images.map(async (image) => {
+            const { path } = image;
+            const newPath = await cloudinary.uploader.upload(path);
+            return newPath.url;
+           
+        }));
 
 
-        // validate input
+        //validate the data
         if (!body.name || !body.price || !body.description || !body.category) {
-            res.status(400).json({ message: "Missing required fields" });
+            res.status(400).json({ message: "All fields are required" });
             return;
         }
 
+        console.log({imagesUrls})
 
         const product: IProduct = new Product({
             name: body.name,
             price: body.price,
             description: body.description,
             category: body.category,
+            images: imagesUrls,
             user_id,
         });
 
         const newProduct: IProduct = await product.save();
         const allProducts: IProduct[] = await Product.find();
 
-        res
-            .status(201)
-            .json({ message: "Product added", product: newProduct, products: allProducts });
+        res.status(201).json({
+            message: "Product added",
+            product: newProduct,
+            products: allProducts,
+        });
+
+
     } catch (error) {
+        console.log(error);
         next(error);
     }
 };

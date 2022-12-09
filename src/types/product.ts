@@ -6,4 +6,5 @@ export interface IProduct extends Document {
     description: string;
     category: string;
     user_id: string;
+    images: string[];
 }
