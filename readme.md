@@ -4,6 +4,7 @@
 
 #### Jest config
 > yarn global add jest
+
 > yarn add --dev ts-jest
 
 
