@@ -14,7 +14,7 @@ router.use(authenticate);
 
 router.get("/", getAllProducts);
 router.post("/", upload.array("images", 10), addProduct);
-router.put("/:id", updateProduct);
+router.put("/:id", upload.array("images", 10), updateProduct);
 router.delete("/:id", deleteProduct);
 router.get("/:id", getSingleProduct);
 

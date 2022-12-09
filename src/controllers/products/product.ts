@@ -12,7 +12,7 @@ const getAllProducts = async (req: Request, res: Response): Promise<void> => {  
     try {
 
         const products: IProduct[] = await Product.find().populate("user_id"); // <--- populate is a mongoose method that allows you to populate a field with the data from another collection
-        res.status(200).json({ products }); 
+        res.status(200).json({ products });
         return;
     } catch (error) {
         throw error;
@@ -45,7 +45,7 @@ const addProduct = async (req: Request, res: Response, next: NextFunction): Prom
             const { path } = image;
             const newPath = await cloudinary.uploader.upload(path);
             return newPath.url;
-           
+
         }));
 
 
@@ -55,7 +55,7 @@ const addProduct = async (req: Request, res: Response, next: NextFunction): Prom
             return;
         }
 
-        console.log({imagesUrls})
+        console.log({ imagesUrls })
 
         const product: IProduct = new Product({
             name: body.name,
@@ -84,36 +84,68 @@ const addProduct = async (req: Request, res: Response, next: NextFunction): Prom
 
 const updateProduct = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-        const {
-            params: { id },
-            body,
-        } = req;
-        const updateProduct: IProduct | null = await Product.findByIdAndUpdate(
-            { _id: id },
-            body
+        const { id } = req.params;
+        let { name, price, description, category } = req.body;
+
+        const images = req.files as Express.Multer.File[]; // <--- req.files is an array of Express.Multer.File objects
+
+        // upload images to cloudinary
+        const imagesUrls = await Promise.all(images?.map(async (image) => {
+            const { path } = image;
+            const newPath = await cloudinary.uploader.upload(path);
+            return newPath.url;
+        }
+        ));
+
+        console.log({ imagesUrls })
+
+        const product: IProduct | null = await Product.findByIdAndUpdate(
+            {
+                _id: id,
+            },
+            {
+                name,
+                price,
+                description,
+                category,
+                images: imagesUrls,
+            },
+            { new: true }
         );
-        const allProducts: IProduct[] = await Product.find(); // this is not necessary, but I added it to show how to get all products after updating one
+
+        const allProducts: IProduct[] = await Product.find();
+
         res.status(200).json({
             message: "Product updated",
-            product: updateProduct,
+            product,
             products: allProducts,
         });
+
+
+
     } catch (error) {
+        console.log(error);
         next(error);
     }
 };
 
 const deleteProduct = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-        const deletedProduct: IProduct | null = await Product.findByIdAndRemove(
-            req.params.id
-        );
-        const allProducts: IProduct[] = await Product.find(); // this is not necessary, but I added it to show how to get all products after deleting one
+       
+        const { id } = req.params;
+        const product: IProduct | null = await Product.findByIdAndDelete({
+            _id: id,
+        });
+
+        const allProducts: IProduct[] = await Product.find();
+
         res.status(200).json({
             message: "Product deleted",
-            product: deletedProduct,
+            product,
             products: allProducts,
         });
+
+     
     } catch (error) {
         next(error);
     }
